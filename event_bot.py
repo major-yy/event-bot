@@ -13,13 +13,17 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s\t%(levelname)s\t%(me
 
 # ============= Google Sheets 設定 =============
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets"]
-SERVICE_ACCOUNT_FILE = "service_account.json"  # GitHub Secrets から書き出して使う想定
 
-SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")  # これも Secrets に保存
+# GitHub Secrets に保存した値を使う
+SPREADSHEET_ID = os.getenv("SPREADSHEET_ID")  # ← Secrets に登録
 SHEET_NAME = "sent_events"
 
 def init_sheet():
-    creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+    # service_account.json の代わりに環境変数 GOOGLE_CREDENTIALS を使う
+    creds_json = os.environ["GOOGLE_CREDENTIALS"]
+    creds_dict = json.loads(creds_json)
+    creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+
     gc = gspread.authorize(creds)
     sh = gc.open_by_key(SPREADSHEET_ID)
     try:
