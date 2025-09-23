@@ -2,8 +2,8 @@ name: Event Bot
 
 on:
   schedule:
-    - cron: "0 0 * * *"
-  workflow_dispatch:
+    - cron: "0 0 * * *"   # 毎日9時(JST)に実行（UTC 0時）
+  workflow_dispatch:       # 手動実行も可能
 
 jobs:
   run-bot:
@@ -19,14 +19,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 gspread google-auth
-
-      - name: Write service account json
         run: |
-          echo '${{ secrets.SERVICE_ACCOUNT_JSON }}' > service_account.json
+          pip install requests beautifulsoup4 gspread google-auth
+
+      - name: Create service account json
+        run: |
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > service_account.json
 
       - name: Run bot
         env:
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: service_account.json
           SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
         run: python event_bot.py
