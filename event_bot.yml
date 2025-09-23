@@ -1,0 +1,27 @@
+name: Event Bot
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # 毎日9時(JST)に実行する場合は 0 0 * * * (UTC 0時)
+  workflow_dispatch:       # 手動実行もできるように
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run bot
+        env:
+          LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
+        run: python event_bot.py
