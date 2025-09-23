@@ -23,11 +23,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4 gspread google-auth
 
-      - name: Restore service_account.json
-        run: echo "${{ secrets.GOOGLE_CREDENTIALS }}" > service_account.json
-
       - name: Run event bot
         env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
           SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
         run: python event_bot.py
