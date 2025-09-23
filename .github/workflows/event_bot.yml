@@ -2,7 +2,7 @@ name: Run Event Bot
 
 on:
   schedule:
-    - cron: "0 13 * * *"  # 毎日0時(JST9時)に実行
+    - cron: "*/5 * * * *"  # 毎日0時(JST9時)に実行
   workflow_dispatch:      # 手動実行も可能
 
 jobs:
@@ -29,4 +29,5 @@ jobs:
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
           SPREADSHEET_ID: ${{ secrets.SPREADSHEET_ID }}
         run: python event_bot.py
+
 
